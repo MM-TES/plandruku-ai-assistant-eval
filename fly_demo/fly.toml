@@ -1,0 +1,42 @@
+# Fly.io config for the PlanDruku chat-assistant DEMO (TIER-FULL, max-quality).
+# Deploy from REPO ROOT:  flyctl deploy --config fly_demo/fly.toml --remote-only
+# app name must be globally unique — rename if "plandruku-demo" is taken.
+app = "plandruku-demo"
+primary_region = "fra"          # EU, close to Ukraine; app + DB MUST share region (same-region private traffic is free)
+
+[build]
+  dockerfile = "Dockerfile"   # resolved relative to THIS config file's dir (fly_demo/); deploy also passes --dockerfile
+  [build.args]
+    DEMO_TIER = "full"          # BGE-M3 dual-dense ensemble ON (2nd RRF channel; in-process, +2.27GB -> 8GB VM)
+    DEMO_EXTERNAL_KB = "true"   # science/standards KB ON (gated audience via Basic Auth — see DEMO_AUTH_* secrets)
+    DEMO_RERANK = "true"        # deep GPU cross-encoder rerank on Modal T4 (backend=modal, pool 120, 0 Fly RAM,
+                                # skip-on-failure). Requires MODAL_TOKEN_ID/MODAL_TOKEN_SECRET as fly secrets.
+    DEMO_QUALITY = "max"        # TIER-FULL answer-quality levers (implies rerank): claim_check + reasoning(max_tokens)
+                                # + answer_max_tokens 1536 + llm_timeout 90s.
+
+[env]
+  PYTHONUNBUFFERED = "1"
+  PYTHONUTF8 = "1"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"       # "suspend" RAM-snapshot is unsupported >2GB; "stop" for the 8GB FULL VM
+  auto_start_machines = true
+  min_machines_running = 1          # ALWAYS-ON during the demo — no cold-start mid-presentation
+  processes = ["app"]
+
+  # Health check on the static showcase page — does NOT depend on the DB and is
+  # left OUTSIDE the Basic Auth gate, so the machine stays healthy while the
+  # embedder warms in the background.
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "60s"            # generous: covers app import + uvicorn start on the FULL image (model load is a daemon thread)
+    method = "GET"
+    path = "/ai-showcase"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 4                          # 4 shared CPUs: shared-mem cap = cpus × 2048 MiB, so 8GB requires cpus>=4
+  memory = "8gb"                    # TIER-FULL: BGE-M3 load-spike + MiniLM + both FAISS + BM25 + uvicorn + concurrency

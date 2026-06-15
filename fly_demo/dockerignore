@@ -1,0 +1,43 @@
+# Copy this to the REPO ROOT as ".dockerignore" before `flyctl deploy`:
+#   Copy-Item fly_demo\dockerignore .dockerignore -Force
+# Buildkit/Fly remote builder reads .dockerignore from the build-context root.
+# Keeps the upload + image lean (and keeps prod secrets out of the image).
+
+# --- VCS / venvs / tooling ---
+.git/
+.venv/
+.venv-ocr/
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.idea/
+.claude/
+
+# --- research / docs / tests / training / build-tooling (not needed to serve) ---
+R_and_D/
+docs/
+reports/
+reports_baseline/
+logs/
+tests/
+training/
+site_harvester/
+scanned_ocr/
+data/
+catboost_info/
+audit_material_predictions/
+
+# --- secrets (provided via `flyctl secrets` at runtime, never baked) ---
+.env
+
+# --- heavy model dirs NOT used by the assistant serve path ---
+models/material_predictor/
+models/plan_kg/
+models/print_time/
+models/design_canonicalization/
+models/knowledge_base_rag_eval/
+models/knowledge_base_rag.bak/
+**/*.premeta.bak
+
+# --- TIER-FULL: the BGE ensemble index models/knowledge_base_rag_bge/ IS shipped (line removed) ---

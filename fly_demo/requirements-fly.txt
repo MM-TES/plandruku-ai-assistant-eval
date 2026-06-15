@@ -1,0 +1,29 @@
+# Slim RUNTIME deps for the Fly chat-assistant demo (TIER-LEAN, MiniLM-only).
+# torch is installed SEPARATELY in the Dockerfile from the CPU-only index.
+# Deliberately EXCLUDES (not needed to serve the UI+assistant): catboost, lightgbm,
+# venn-abers, openpyxl(*), easyocr, pymupdf, pywin32, python-pptx, beautifulsoup4,
+# langchain-text-splitters, trafilatura, FlagEmbedding.
+#   (*) openpyxl + pandas DO load via the web-router import graph -> kept below.
+fastapi>=0.110.0
+uvicorn[standard]>=0.27.0
+jinja2>=3.1.0
+python-multipart>=0.0.9
+sqlalchemy>=2.0
+psycopg2-binary>=2.9
+pandas>=2.0
+openpyxl>=3.1
+markdown>=3.5
+python-dotenv>=1.0
+httpx>=0.27.0
+anthropic>=0.25.0
+openai>=1.50
+rapidfuzz>=3.9.0
+sqlglot>=25.0
+rank-bm25>=0.2.2
+langsmith>=0.1.140
+faiss-cpu>=1.8
+sentence-transformers>=2.2.0
+# Modal SDK — needed ONLY if DEMO_RERANK=true (GPU cross-encoder rerank on Modal T4,
+# app plandruku-rag-rerank). gpu_reranker.py does `import modal` lazily; harmless if rerank off.
+modal>=0.64
+# numpy is pulled transitively by pandas / sentence-transformers.

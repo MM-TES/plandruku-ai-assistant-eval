@@ -1,0 +1,32 @@
+# --- Secrets — never commit ---
+.env
+.env.*
+config/ui_server.json
+**/.modal.toml
+*.key
+*.pem
+
+# --- Heavy / generated / data artifacts ---
+models/
+reports/
+catboost_info/
+*.dump
+*.sqlite
+name_map*.csv
+real_names*.txt
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+
+# --- Editors / OS ---
+.idea/
+.vscode/
+.claude/
+.DS_Store
+Thumbs.db

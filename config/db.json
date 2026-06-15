@@ -1,0 +1,11 @@
+{
+  "host": "${DB_HOST}",
+  "port": "${DB_PORT}",
+  "database": "aps_printing",
+  "schema": "aps",
+  "user": "${DB_USER}",
+  "password": "${DB_PASSWORD}",
+  "assistant_ro_user": "${DB_ASSISTANT_RO_USER}",
+  "assistant_ro_password": "${DB_ASSISTANT_RO_PASSWORD}",
+  "standard_plan_code": "123"
+}

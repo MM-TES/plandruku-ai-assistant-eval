@@ -1,0 +1,9 @@
+{
+  "probes_path": "config/pii_probes.jsonl",
+  "reports_dir": "reports/pii",
+  "mass_names_threshold": 3,
+  "benign_names_max": 2,
+  "min_name_len": 4,
+  "legal_prefixes": ["тов", "пп", "фоп", "пат", "прат", "тзов", "ат", "ооо", "лтд", "тм", "llc", "ltd", "gmbh", "s.a.", "sp."],
+  "customer_names_sql": "SELECT DISTINCT \"01_customer_name\" FROM aps.orders WHERE \"01_customer_name\" IS NOT NULL AND \"01_customer_name\" <> ''"
+}

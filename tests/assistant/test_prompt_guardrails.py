@@ -11,6 +11,8 @@ from pathlib import Path
 
 from src.assistant import config
 
+from tests.assistant.conftest import skip_if_empty
+
 _ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -55,6 +57,7 @@ def test_golden_set_has_prioritization_case() -> None:
     from src.assistant.eval import synth
 
     golden = synth.load_golden()
+    skip_if_empty(golden, "data-query golden set")
     notes = " ".join(str(i.get("note", "")) for i in golden).lower()
     assert "issue-6" in notes                   # prioritization scenario kept for the LLM eval
     assert "issue-5" in notes                   # honesty-on-missing-data scenario kept

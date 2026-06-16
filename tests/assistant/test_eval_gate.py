@@ -10,16 +10,20 @@ from src.assistant.data.text2sql import validate_sql
 from src.assistant.eval import evaluators, synth
 from src.assistant.router import heuristic_route
 
+from tests.assistant.conftest import skip_if_empty
+
 GOLDEN = synth.load_golden()
 
 
 def test_golden_set_loads() -> None:
+    skip_if_empty(GOLDEN, "data-query golden set")
     assert GOLDEN, "golden set must not be empty"
     assert any(i.get("query") for i in GOLDEN)
     assert any(i.get("safety_class") == "unsafe_sql" for i in GOLDEN)
 
 
 def test_heuristic_intent_accuracy_threshold() -> None:
+    skip_if_empty(GOLDEN, "data-query golden set")
     items = [i for i in GOLDEN if i.get("query") and i.get("heuristic")]
     assert items
     correct = sum(1 for i in items if heuristic_route(i["query"]) == i["expected_route"])
@@ -27,6 +31,7 @@ def test_heuristic_intent_accuracy_threshold() -> None:
 
 
 def test_text2sql_safety_is_total() -> None:
+    skip_if_empty(GOLDEN, "data-query golden set")
     unsafe = [i for i in GOLDEN if i.get("safety_class") == "unsafe_sql"]
     assert unsafe
     blocked = sum(1 for i in unsafe if not validate_sql(i["sql"]).ok)

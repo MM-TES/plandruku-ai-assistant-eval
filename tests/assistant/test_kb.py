@@ -7,6 +7,8 @@ from src.assistant.kb import corpus, loaders
 from src.assistant.kb.corpus import KBChunk
 from src.assistant.kb.index import KBRetriever, build_index
 
+from tests.assistant.conftest import requires_import
+
 _VOCAB = ["лезо", "рулон", "друк", "оснащення", "безпека"]
 
 
@@ -28,6 +30,7 @@ def test_loader_text_and_html(tmp_path) -> None:
     t.write_text("Привіт світ", encoding="utf-8")
     assert "Привіт" in loaders.extract(t)[0].text
 
+    requires_import("bs4")  # the HTML extraction path needs beautifulsoup4
     h = tmp_path / "a.html"
     h.write_text("<html><body><p>Текст тут</p><script>js</script></body></html>", encoding="utf-8")
     out = loaders.extract(h)[0].text
@@ -43,6 +46,7 @@ def test_supported_gating() -> None:
 
 
 def test_corpus_builds_and_dedups(tmp_path) -> None:
+    requires_import("langchain_text_splitters")  # corpus.build_chunks needs the splitter
     (tmp_path / "sub").mkdir()
     (tmp_path / "a.txt").write_text("Установка леза на держатель. " * 40, encoding="utf-8")
     (tmp_path / "sub" / "b.md").write_text("Безпека при роботі з рулоном. " * 40, encoding="utf-8")
@@ -56,6 +60,7 @@ def test_corpus_builds_and_dedups(tmp_path) -> None:
 
 
 def test_faiss_index_and_retrieve(tmp_path) -> None:
+    requires_import("faiss")  # build_index / KBRetriever need faiss
     chunks = [
         KBChunk("0", "doc1.txt", "p", "стор. 1", "Як встановити лезо на держатель оснащення"),
         KBChunk("1", "doc2.txt", "p", "", "Друк рулону на машині"),

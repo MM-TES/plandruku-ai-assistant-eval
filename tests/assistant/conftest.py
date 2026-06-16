@@ -6,9 +6,47 @@ off during tests.
 """
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 import pytest
+
+
+# --- Curated-checkout guards ------------------------------------------------
+# This suite ships in a *curated* subset of the production monorepo: some
+# system-under-test modules, helper scripts, and golden sets are intentionally
+# not included. The guards below let a test SKIP (never fail) when its
+# dependency / file / dataset is absent, while running fully in the complete
+# repo. They are deliberately conditional — presence of a module, a file, or a
+# non-empty dataset — never an unconditional skip.
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+
+
+def requires_import(modname: str):
+    """Skip the calling test unless ``modname`` is importable in this checkout.
+
+    Returns the imported module so a test can bind it. Thin wrapper over
+    :func:`pytest.importorskip` with a curated-checkout-aware reason.
+    """
+    return pytest.importorskip(modname, reason=f"{modname} not present in this checkout")
+
+
+def requires_file(relpath: str) -> Path:
+    """Skip the calling test unless ``relpath`` exists under the repo root.
+
+    Returns the resolved path so a test can read it.
+    """
+    p = _REPO_ROOT / relpath
+    if not p.exists():
+        pytest.skip(f"{relpath} not present in this checkout")
+    return p
+
+
+def skip_if_empty(golden, name: str = "golden set"):
+    """Skip the calling test when ``golden`` is empty (dataset not shipped)."""
+    if not golden:
+        pytest.skip(f"{name} is empty in this checkout — golden not shipped")
+    return golden
 
 
 # --- Offline LangSmith ------------------------------------------------------

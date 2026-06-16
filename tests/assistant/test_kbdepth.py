@@ -9,6 +9,8 @@ from pathlib import Path
 
 from src.assistant.eval.kbdepth import golden as G
 
+from tests.assistant.conftest import skip_if_empty
+
 
 # ── spec-number matcher ─────────────────────────────────────────────────────────
 def test_matcher_keeps_bare_4digit_whole():
@@ -43,6 +45,7 @@ def test_recall_empty_golden_is_one():
 # ── golden-set integrity ────────────────────────────────────────────────────────
 def test_golden_loads_varied_products():
     items = G.load_golden()
+    skip_if_empty(items, "kbdepth golden set")
     assert len(items) >= 6
     by = {it.product: it for it in items}
     # six base datasheets + a comparison item

@@ -4,6 +4,8 @@ from __future__ import annotations
 from src.assistant.kb import corpus
 from src.assistant.kb.index import _product_candidates, _product_keys
 
+from tests.assistant.conftest import requires_import
+
 
 # ── path → metadata (P1.2) ──────────────────────────────────────────────────────
 def test_chunk_meta_datasheet_product():
@@ -75,6 +77,7 @@ def test_product_candidates_joins_adjacent_but_not_bare_prefix():
 
 # ── metadata migration (no re-embed) ─────────────────────────────────────────────
 def test_migrate_kb_metadata_adds_fields(tmp_path):
+    requires_import("scripts.migrate_kb_metadata")
     import json
 
     from scripts.migrate_kb_metadata import migrate

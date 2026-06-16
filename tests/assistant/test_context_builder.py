@@ -6,6 +6,8 @@ import pytest
 from src.assistant.grounding import context_builder
 from src.assistant.schema import PageContext
 
+from tests.assistant.conftest import requires_import
+
 _RISK_ROW = {
     "order_id": 15500,
     "customer_name": "Клієнт А",
@@ -129,6 +131,7 @@ def test_extract_sku_variants() -> None:
 
 
 def test_live_summary_has_counter_glossary(monkeypatch) -> None:
+    requires_import("src.web.templating")
     monkeypatch.setattr(
         "src.web.templating._nav_counts",
         lambda: {"sales": 1, "materials": 2, "production": 3, "portfolio": 184,

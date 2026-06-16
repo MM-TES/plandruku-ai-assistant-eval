@@ -5,6 +5,8 @@ import pytest
 from fastapi.testclient import TestClient
 
 from src.assistant.schema import AssistantResponse
+
+pytest.importorskip("src.web.app", reason="src.web.app (UI shell) not present in this checkout")
 from src.web.app import create_app
 
 

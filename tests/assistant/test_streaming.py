@@ -6,6 +6,8 @@ from fastapi.testclient import TestClient
 
 from src.assistant.orchestrator import stream_answer
 from src.assistant.schema import AssistantRequest, PageContext
+
+pytest.importorskip("src.web.app", reason="src.web.app (UI shell) not present in this checkout")
 from src.web.app import create_app
 
 from tests.assistant.conftest import FakeCompletion

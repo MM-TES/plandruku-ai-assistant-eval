@@ -13,6 +13,8 @@ from pathlib import Path
 from src.assistant import config
 from src.assistant.eval.kbdepth import harness
 
+from tests.assistant.conftest import requires_file
+
 _ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -283,6 +285,7 @@ def test_ensemble_disabled_gracefully_on_missing_dir(tmp_path):
 
 # ── golden_qc mechanical gate (offline; risk R5 = golden drift) ──────────────────
 def test_golden_qc_drops_dup_missing_source_and_claimless():
+    requires_file("scripts/golden_qc.py")
     qc = _load_script("golden_qc")
     items = [
         {"product": "A", "queries": ["яка товщина плівки fxcmt детально"],
@@ -309,6 +312,7 @@ def test_golden_qc_drops_dup_missing_source_and_claimless():
 
 
 def test_golden_qc_per_source_cap():
+    requires_file("scripts/golden_qc.py")
     qc = _load_script("golden_qc")
     items = [{"product": f"P{i}", "queries": [f"унікальне питання номер {i} про плівку"],
               "source": "d/X.pdf", "key_claims": ["плівка"], "category": "datasheet"}

@@ -18,3 +18,8 @@ Deploy from repo root: `flyctl deploy --config fly_demo/fly.toml --remote-only`
 (after building the sanitized Fly Postgres — see FLY_RUNBOOK.md F2–F5).
 
 These artifacts patch config **inside the image only** — the prod working-tree config files are not modified.
+
+> **Curated-repo note:** the UI shell (`main.py`, `templates/`, `static/`) and the vector indexes are
+> intentionally **not** part of this curated submission — only the assistant, its eval, and these deploy
+> artifacts are included. Live deploy proof: **https://plandruku-demo.fly.dev** (gated). The
+> `R_and_D/...` runbooks referenced above are internal and not shipped in this repo.

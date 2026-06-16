@@ -35,17 +35,23 @@ Code: [`src/assistant/`](src/assistant/) · knowledge it is graded on: [`docs/op
 ## Running it
 ```bash
 pip install -r requirements.txt
-export OPENROUTER_API_KEY=...          # LLM gateway — your key, never committed
+```
 
-# Injection (free, zero-LLM):
+**(a) Works out of the box** — no database, no KB index, no LLM key:
+```bash
+# prompt-injection guard — zero-LLM red-team:
 python scripts/red_team_eval.py --golden config/kb_golden_300.jsonl --golden config/operator_golden_50.jsonl --label run1
-# PII (costed) and faithfulness/refusal (costed) call the assistant, which needs the KB index + a DB:
+# PII-detector unit tests (47):
+python -m pytest tests/assistant/test_pii_eval.py -q
+```
+
+**(b) Needs the KB vector index + a live DB** (and `OPENROUTER_API_KEY`) — these drive the real assistant (`orchestrator.answer()`):
+```bash
+export OPENROUTER_API_KEY=...           # your key, never committed
 python scripts/pii_eval.py --label run1
 python -m src.assistant.eval.kbdepth.harness --science --answers --judge --golden config/eval_subset_prod40.jsonl --label run1
 ```
-The PII/faithfulness runs exercise the real assistant (`orchestrator.answer()`), which requires the KB
-vector index (built from sources — not shipped here, see SECURITY) and a database. See
-[`eval_report/REPORT.md` §6](eval_report/REPORT.md) for the exact reproduction recipe and spend.
+The KB index is built from sources (not shipped — see [`SECURITY.md`](SECURITY.md)). Full recipe + spend: [`eval_report/REPORT.md` §6](eval_report/REPORT.md).
 
 ## Live demo
 A gated, deployed instance runs on **Fly.io** (max-quality retrieval config, **sanitized** data,

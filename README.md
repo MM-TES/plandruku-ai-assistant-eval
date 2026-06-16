@@ -37,6 +37,11 @@ Code: [`src/assistant/`](src/assistant/) · knowledge it is graded on: [`docs/op
 pip install -r requirements.txt
 ```
 
+> **Running the test suite.** `pytest tests/` works on this curated checkout out of the box —
+> tests whose system-under-test module, helper script, or golden set was pruned from the subset
+> **skip** (never fail). For the *full* suite (incl. the KB loader/chunker tests) also install the
+> test-only deps: `pip install -r requirements-dev.txt`.
+
 **(a) Works out of the box** — no database, no KB index, no LLM key:
 ```bash
 # prompt-injection guard — zero-LLM red-team:

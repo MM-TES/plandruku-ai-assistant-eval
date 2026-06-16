@@ -9,6 +9,7 @@ config/ui_server.json
 # --- Heavy / generated / data artifacts ---
 models/
 reports/
+logs/
 catboost_info/
 *.dump
 *.sqlite

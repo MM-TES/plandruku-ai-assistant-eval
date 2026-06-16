@@ -1,0 +1,14 @@
+# Test-only dependencies for running the FULL assistant test suite.
+#
+# These are deliberately NOT in the slim runtime requirements.txt (which serves the
+# Fly demo): the KB loader's HTML-extraction path needs beautifulsoup4, and the
+# corpus chunker needs langchain-text-splitters. Install them ALONGSIDE
+# requirements.txt to exercise those tests:
+#
+#     pip install -r requirements.txt -r requirements-dev.txt
+#
+# Without them — and without the pruned source modules / golden sets that are not
+# part of this curated subset — the affected tests SKIP cleanly (never fail); the
+# conditional guards live in tests/assistant/conftest.py.
+beautifulsoup4>=4.12
+langchain-text-splitters>=0.2
